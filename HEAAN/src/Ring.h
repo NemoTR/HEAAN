@@ -23,9 +23,9 @@ class Ring {
 
 public:
 
-	NTL::ZZ* qpows;
-	long* rotGroup;
-	std::complex<double>* ksiPows;
+	NTL::ZZ* qpows;	// qpows[i] = 2 ^ i 
+	long* rotGroup;	// rotGroup[i] = (5 ^ i) % M
+	std::complex<double>* ksiPows; // ksiPows[j] = exp(2 * PI * i * j / M)					
 	std::map<long, BootContext*> bootContextMap;
 	RingMultiplier multiplier;
 

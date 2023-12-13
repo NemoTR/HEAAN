@@ -32,13 +32,13 @@ private:
 public:
 	Ring& ring;
 
-	bool isSerialized;
+	bool isSerialized; // 是否将密钥转化为字符串的标记
 
-	std::map<long, Key*> keyMap; ///< contain Encryption, Multiplication and Conjugation keys, if generated
-	std::map<long, Key*> leftRotKeyMap; ///< contain left rotation keys, if generated
+	std::map<long, Key*> keyMap; // contain Encryption, Multiplication and Conjugation keys, if generated
+	std::map<long, Key*> leftRotKeyMap; // contain left rotation keys, if generated
 
-	std::map<long, std::string> serKeyMap; ///< contain Encryption, Multiplication and Conjugation keys, if generated
-	std::map<long, std::string> serLeftRotKeyMap; ///< contain left rotation keys, if generated
+	std::map<long, std::string> serKeyMap; // contain Encryption, Multiplication and Conjugation keys, if generated
+	std::map<long, std::string> serLeftRotKeyMap; // contain left rotation keys, if generated
 
 	Scheme(SecretKey& secretKey, Ring& ring, bool isSerialized = false);
 
