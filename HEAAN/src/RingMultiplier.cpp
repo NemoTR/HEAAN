@@ -120,6 +120,7 @@ namespace heaan
 		return true;
 	}
 
+	// 基于 CT 蝴蝶的 NTT
 	void RingMultiplier::NTT(uint64_t *a, long index)
 	{
 		long t = N;
@@ -143,6 +144,7 @@ namespace heaan
 		}
 	}
 
+	// 基于 GS 蝴蝶的 NTT
 	void RingMultiplier::INTT(uint64_t *a, long index)
 	{
 		uint64_t p = pVec[index];
@@ -176,7 +178,7 @@ namespace heaan
 	//   FFT
 	//----------------------------------------------------------------------------------
 
-	// 批量将多项式转换为 NTT 形式
+	// 批量将多项式系数使用 CRT 拆分，然后转换为 NTT 形式。
 	void RingMultiplier::CRT(uint64_t *rx, ZZ *x, const long np)
 	{
 		NTL_EXEC_RANGE(np, first, last);
@@ -212,6 +214,7 @@ namespace heaan
 		}
 	}
 
+	// 使用 CRT 还原
 	void RingMultiplier::reconstruct(ZZ *x, uint64_t *rx, long np, const ZZ &q)
 	{
 		ZZ *pHatnp = pHat[np - 1];
@@ -241,6 +244,11 @@ namespace heaan
 		NTL_EXEC_RANGE_END;
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，多项式形式，存储于 b。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::mult(ZZ *x, ZZ *a, ZZ *b, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();
@@ -278,6 +286,11 @@ namespace heaan
 		delete[] rx;
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::multNTT(ZZ *x, ZZ *a, uint64_t *rb, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();
@@ -310,6 +323,11 @@ namespace heaan
 		delete[] rx;
 	}
 
+	/*	输入：a(X)，点值形式，存储于 ra。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::multDNTT(ZZ *x, uint64_t *ra, uint64_t *rb, long np, const ZZ &mod)
 	{
 		uint64_t *rx = new uint64_t[np << logN]();
@@ -335,6 +353,11 @@ namespace heaan
 		delete[] rx;
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，多项式形式，存储于 b。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 a。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::multAndEqual(ZZ *a, ZZ *b, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();
@@ -372,6 +395,11 @@ namespace heaan
 		delete[] rb;
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 a。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::multNTTAndEqual(ZZ *a, uint64_t *rb, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();
@@ -405,6 +433,10 @@ namespace heaan
 		delete[] ra;
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+	 *	输出：a(X)^2，多项式形式，存储到 x。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::square(ZZ *x, ZZ *a, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();
@@ -440,6 +472,10 @@ namespace heaan
 		delete[] rx;
 	}
 
+	/*	输入：a(X)，点值形式，存储于 ra。
+	 *	输出：a(X)^2，多项式形式，存储到 x。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::squareNTT(ZZ *x, uint64_t *ra, long np, const ZZ &mod)
 	{
 		uint64_t *rx = new uint64_t[np << logN]();
@@ -464,7 +500,10 @@ namespace heaan
 		delete[] rx;
 	}
 
-	// 基于 NTT 计算多项式 a(x) * a(x) (系数模除 mod)
+	/*	输入：a(X)，多项式形式，存储于 a。
+	 *	输出：a(X)^2，多项式形式，存储到 a。
+	 *	系数模除 mod。
+	 */
 	void RingMultiplier::squareAndEqual(ZZ *a, long np, const ZZ &mod)
 	{
 		uint64_t *ra = new uint64_t[np << logN]();

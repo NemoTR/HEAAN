@@ -24,7 +24,7 @@ namespace heaan
 		uint64_t *pInvVec = new uint64_t[nprimes]; // 在 2^64 下的乘法逆元
 		uint64_t **scaledRootPows = new uint64_t *[nprimes]; // scaledRootPows[i][j] = Mthroot^j << 64 (mod pVec[i])
 		uint64_t **scaledRootInvPows = new uint64_t *[nprimes]; // scaledRootInvPows[i][j] = MthrootInv[i]^j << 64 (mod pVec[i])
-		uint64_t *scaledNInv = new uint64_t[nprimes]; // scaledNInv[i] = N << 64 % pVec[i]
+		uint64_t *scaledNInv = new uint64_t[nprimes]; // scaledNInv[i] = Ninv << 64 % pVec[i]
 		_ntl_general_rem_one_struct *red_ss_array[nprimes]; // red_ss_array[i] = _ntl_general_rem_one_struct_build(pVec[i]);
 		NTL::mulmod_precon_t *coeffpinv_array[nprimes];
 
