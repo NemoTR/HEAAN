@@ -585,7 +585,9 @@ void TestScheme::testWriteAndRead(long logq, long logp, long logSlots) {
 	cout << "!!! END TEST WRITE AND READ !!!" << endl;
 }
 
-
+// logq = logp + 10
+// logSlots = logn
+// T 泰勒展开的精度为 1/T
 void TestScheme::testBootstrap(long logq, long logp, long logSlots, long logT) {
 	cout << "!!! START TEST BOOTSTRAP !!!" << endl;
 

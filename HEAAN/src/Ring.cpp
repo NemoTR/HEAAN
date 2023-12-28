@@ -660,6 +660,8 @@ namespace heaan
 	//   ROTATION & CONJUGATION
 	//----------------------------------------------------------------------------------
 
+	// x^i = x^(i + N) * (-1)
+	// x^i -> (x^i) ^ (5^r)
 	void Ring::leftRotate(ZZ *res, ZZ *p, long r)
 	{
 		long pow = rotGroup[r];
@@ -677,7 +679,9 @@ namespace heaan
 			}
 		}
 	}
-
+    
+	// (x^i) ^ (-1) = x^(-i) = -1 * (x ^ (N - i))
+	// x^i -> x^(-i)
 	void Ring::conjugate(ZZ *res, ZZ *p)
 	{
 		res[0] = p[0];
@@ -691,6 +695,8 @@ namespace heaan
 	//   SAMPLING
 	//----------------------------------------------------------------------------------
 
+	// 对噪声 e 进行采样：res = e - res
+	// 使用预置的参数 sigma
 	void Ring::subFromGaussAndEqual(ZZ *res, const ZZ &q)
 	{
 		static double Pi = 4.0 * atan(1.0);
@@ -708,6 +714,8 @@ namespace heaan
 		}
 	}
 
+	// 对噪声 e 进行采样：res = e - res 
+	// 使用指定的参数 _sigma
 	void Ring::subFromGaussAndEqual(ZZ *res, const ZZ &q, double _sigma)
 	{
 		static double Pi = 4.0 * atan(1.0);
@@ -725,6 +733,8 @@ namespace heaan
 		}
 	}
 
+	// 对噪声 e 进行采样：res = e + res 
+	// 使用预置的参数 sigma
 	void Ring::addGaussAndEqual(ZZ *res, const ZZ &q)
 	{
 		static double Pi = 4.0 * atan(1.0);
@@ -742,6 +752,8 @@ namespace heaan
 		}
 	}
 
+	// 对噪声 e 进行采样：res = e + res 
+	// 使用指定的参数 _sigma
 	void Ring::addGaussAndEqual(ZZ *res, const ZZ &q, double _sigma)
 	{
 		static double Pi = 4.0 * atan(1.0);
@@ -777,8 +789,8 @@ namespace heaan
 	
 	/*
 		分布
-		0 	：	1/2
-		1	：	1/4
+		 0 	：	1/2
+		 1	：	1/4
 		-1	：	1/4
 	*/ 
 	void Ring::sampleZO(ZZ *res)
@@ -791,6 +803,7 @@ namespace heaan
 		}
 	}
 
+	// 均匀分布
 	void Ring::sampleUniform2(ZZ *res, long bits)
 	{
 		for (long i = 0; i < N; i++)
