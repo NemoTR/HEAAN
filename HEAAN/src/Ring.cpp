@@ -82,7 +82,9 @@ namespace heaan
 				long gap = M / lenq;
 				for (long j = 0; j < lenh; ++j)
 				{
-					long idx = ((rotGroup[j] % lenq)) * gap;
+					// long idx = ((rotGroup[j] % lenq)) * gap;
+					long idx = rotGroup[j] * gap % M;
+
 					complex<double> u = vals[i + j];
 					complex<double> v = vals[i + j + lenh];
 					v *= ksiPows[idx];
@@ -104,7 +106,9 @@ namespace heaan
 				long gap = M / lenq;
 				for (long j = 0; j < lenh; ++j)
 				{
-					long idx = (lenq - (rotGroup[j] % lenq)) * gap;
+					// long idx = (lenq - (rotGroup[j] % lenq)) * gap;
+					long idx = M - rotGroup[j] * gap % M;
+
 					complex<double> u = vals[i + j] + vals[i + j + lenh];
 					complex<double> v = vals[i + j] - vals[i + j + lenh];
 					v *= ksiPows[idx];
@@ -155,8 +159,8 @@ namespace heaan
 		EMBInv(uvals, slots);
 		for (i = 0, jdx = Nh, idx = 0; i < slots; ++i, jdx += gap, idx += gap)
 		{
-			mx[idx] = EvaluatorUtils::scaleUpToZZ(uvals[i].real(), logp);
-			mx[jdx] = EvaluatorUtils::scaleUpToZZ(uvals[i].imag(), logp);
+			mx[idx] = EvaluatorUtils::scaleUpToZZ(uvals[i].real(), logp); // mx[idx] = uvals[i].real() << logp
+			mx[jdx] = EvaluatorUtils::scaleUpToZZ(uvals[i].imag(), logp); // mx[jdx] = uvals[i].imag() << logp
 		}
 		delete[] uvals;
 	}
@@ -168,15 +172,15 @@ namespace heaan
 		ZZ tmp;
 		for (long i = 0, idx = 0; i < slots; ++i, idx += gap)
 		{
-			rem(tmp, mx[idx], q);
+			rem(tmp, mx[idx], q); // tmp = mx[idx] % q
 			if (NumBits(tmp) == logq)
 				tmp -= q;
-			vals[i].real(EvaluatorUtils::scaleDownToReal(tmp, logp));
+			vals[i].real(EvaluatorUtils::scaleDownToReal(tmp, logp)); // vals[i].real() = tmp >> logp
 
-			rem(tmp, mx[idx + Nh], q);
+			rem(tmp, mx[idx + Nh], q); // tmp = mx[idx + Nh] % q
 			if (NumBits(tmp) == logq)
 				tmp -= q;
-			vals[i].imag(EvaluatorUtils::scaleDownToReal(tmp, logp));
+			vals[i].imag(EvaluatorUtils::scaleDownToReal(tmp, logp)); // vals[i].imag() = tmp >> logp
 		}
 		EMB(vals, slots);
 	}
