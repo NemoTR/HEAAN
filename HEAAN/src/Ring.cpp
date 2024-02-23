@@ -373,6 +373,7 @@ namespace heaan
 	//   MULTIPLICATION
 	//----------------------------------------------------------------------------------
 
+	// 序列中所有数的最大位数
 	long Ring::maxBits(const ZZ *f, long n)
 	{
 		long i, m;
@@ -385,60 +386,100 @@ namespace heaan
 		return m;
 	}
 
+	// 批量将多项式系数使用 CRT 拆分，然后转换为 NTT 形式。
 	void Ring::CRT(uint64_t *rx, ZZ *x, const long np)
 	{
 		multiplier.CRT(rx, x, np);
 	}
 
+	// 批量进行 NTT 形式的加法
 	void Ring::addNTTAndEqual(uint64_t *ra, uint64_t *rb, const long np)
 	{
 		multiplier.addNTTAndEqual(ra, rb, np);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，多项式形式，存储于 b。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 q。
+	 */
 	void Ring::mult(ZZ *x, ZZ *a, ZZ *b, long np, const ZZ &q)
 	{
 		multiplier.mult(x, a, b, np, q);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 q。
+	 */
 	void Ring::multNTT(ZZ *x, ZZ *a, uint64_t *rb, long np, const ZZ &q)
 	{
 		multiplier.multNTT(x, a, rb, np, q);
 	}
 
+	/*	输入：a(X)，点值形式，存储于 ra。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 x。
+	 *	系数模除 q。
+	 */
 	void Ring::multDNTT(ZZ *x, uint64_t *ra, uint64_t *rb, long np, const ZZ &q)
 	{
 		multiplier.multDNTT(x, ra, rb, np, q);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，多项式形式，存储于 b。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 a。
+	 *	系数模除 q。
+	 */
 	void Ring::multAndEqual(ZZ *a, ZZ *b, long np, const ZZ &q)
 	{
 		multiplier.multAndEqual(a, b, np, q);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+     *	输入：b(X)，点值形式，存储于 rb。
+	 *	输出：a(X)*b(X)，多项式形式，存储到 a。
+	 *	系数模除 q。
+	 */
 	void Ring::multNTTAndEqual(ZZ *a, uint64_t *rb, long np, const ZZ &q)
 	{
 		multiplier.multNTTAndEqual(a, rb, np, q);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+	 *	输出：a(X)^2，多项式形式，存储到 x。
+	 *	系数模除 q。
+	 */
 	void Ring::square(ZZ *x, ZZ *a, long np, const ZZ &q)
 	{
 		multiplier.square(x, a, np, q);
 	}
 
+	/*	输入：a(X)，点值形式，存储于 ra。
+	 *	输出：a(X)^2，多项式形式，存储到 x。
+	 *	系数模除 q。
+	 */
 	void Ring::squareNTT(ZZ *x, uint64_t *ra, long np, const ZZ &q)
 	{
 		multiplier.squareNTT(x, ra, np, q);
 	}
 
+	/*	输入：a(X)，多项式形式，存储于 a。
+	 *	输出：a(X)^2，多项式形式，存储到 a。
+	 *	系数模除 q。
+	 */
 	void Ring::squareAndEqual(ZZ *a, long np, const ZZ &q)
 	{
 		multiplier.squareAndEqual(a, np, q);
 	}
 
 	//----------------------------------------------------------------------------------
-	//   OTHER
+	//   OTHER（都是多项式运算）
 	//----------------------------------------------------------------------------------
 
+	// res(x) = p(x) % mod
 	void Ring::mod(ZZ *res, ZZ *p, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -447,6 +488,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) %= mod
 	void Ring::modAndEqual(ZZ *p, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -455,6 +497,7 @@ namespace heaan
 		}
 	}
 
+	// res(x) = -p(x)
 	void Ring::negate(ZZ *res, ZZ *p)
 	{
 		for (long i = 0; i < N; ++i)
@@ -463,6 +506,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) = -p(x)
 	void Ring::negateAndEqual(ZZ *p)
 	{
 		for (long i = 0; i < N; ++i)
@@ -471,6 +515,7 @@ namespace heaan
 		}
 	}
 
+	// res(x) = (p1(x) + p2(x)) % mod
 	void Ring::add(ZZ *res, ZZ *p1, ZZ *p2, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -479,6 +524,7 @@ namespace heaan
 		}
 	}
 
+	// p1(x) = (p1(x) + p2(x)) % mod
 	void Ring::addAndEqual(ZZ *p1, ZZ *p2, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -487,6 +533,7 @@ namespace heaan
 		}
 	}
 
+	// res(x) = (p1(x) - p2(x)) % mod
 	void Ring::sub(ZZ *res, ZZ *p1, ZZ *p2, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -494,7 +541,8 @@ namespace heaan
 			AddMod(res[i], p1[i], -p2[i], mod);
 		}
 	}
-
+	
+	// p1(x) = (p1(x) - p2(x)) % mod
 	void Ring::subAndEqual(ZZ *p1, ZZ *p2, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -503,6 +551,7 @@ namespace heaan
 		}
 	}
 
+	// p2(x) = (p1(x) - p2(x)) % mod
 	void Ring::subAndEqual2(ZZ *p1, ZZ *p2, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -511,6 +560,7 @@ namespace heaan
 		}
 	}
 
+	// res(x)  = p(x) * x^monomialDeg
 	void Ring::multByMonomial(ZZ *res, ZZ *p, long monomialDeg)
 	{
 		long shift = monomialDeg % M;
@@ -554,6 +604,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) *= x^monomialDeg
 	void Ring::multByMonomialAndEqual(ZZ *p, long monomialDeg)
 	{
 		long shift = monomialDeg % M;
@@ -592,6 +643,7 @@ namespace heaan
 		delete[] tmpx;
 	}
 
+	// res(x) = (p(x) * cnst) % mod
 	void Ring::multByConst(ZZ *res, ZZ *p, ZZ &cnst, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -600,6 +652,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) = p(x) * cnst % mod
 	void Ring::multByConstAndEqual(ZZ *p, ZZ &cnst, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -608,6 +661,7 @@ namespace heaan
 		}
 	}
 
+	// res(x) = p(x) * 2^bits % mod
 	void Ring::leftShift(ZZ *res, ZZ *p, const long bits, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -617,6 +671,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) = p(x) * 2^bits % mod
 	void Ring::leftShiftAndEqual(ZZ *p, const long bits, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -626,6 +681,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) = p(x) * 2 % mod
 	void Ring::doubleAndEqual(ZZ *p, const ZZ &mod)
 	{
 		for (long i = 0; i < N; ++i)
@@ -635,6 +691,7 @@ namespace heaan
 		}
 	}
 
+	// res(x) = p(x) / 2^bits 正数向上取整，负数向下取整
 	void Ring::rightShift(ZZ *res, ZZ *p, long bits)
 	{
 		ZZ tmp = to_ZZ(1) << (bits - 1);
@@ -647,6 +704,7 @@ namespace heaan
 		}
 	}
 
+	// p(x) /= 2^bits 正数向上取整，负数向下取整
 	void Ring::rightShiftAndEqual(ZZ *p, long bits)
 	{
 		ZZ tmp = to_ZZ(1) << (bits - 1);
@@ -683,7 +741,7 @@ namespace heaan
 			}
 		}
 	}
-    
+
 	// (x^i) ^ (-1) = x^(-i) = -1 * (x ^ (N - i))
 	// x^i -> x^(-i)
 	void Ring::conjugate(ZZ *res, ZZ *p)
@@ -718,7 +776,7 @@ namespace heaan
 		}
 	}
 
-	// 对噪声 e 进行采样：res = e - res 
+	// 对噪声 e 进行采样：res = e - res
 	// 使用指定的参数 _sigma
 	void Ring::subFromGaussAndEqual(ZZ *res, const ZZ &q, double _sigma)
 	{
@@ -737,7 +795,7 @@ namespace heaan
 		}
 	}
 
-	// 对噪声 e 进行采样：res = e + res 
+	// 对噪声 e 进行采样：res = e + res
 	// 使用预置的参数 sigma
 	void Ring::addGaussAndEqual(ZZ *res, const ZZ &q)
 	{
@@ -756,7 +814,7 @@ namespace heaan
 		}
 	}
 
-	// 对噪声 e 进行采样：res = e + res 
+	// 对噪声 e 进行采样：res = e + res
 	// 使用指定的参数 _sigma
 	void Ring::addGaussAndEqual(ZZ *res, const ZZ &q, double _sigma)
 	{
@@ -790,13 +848,13 @@ namespace heaan
 			}
 		}
 	}
-	
+
 	/*
 		分布
 		 0 	：	1/2
 		 1	：	1/4
 		-1	：	1/4
-	*/ 
+	*/
 	void Ring::sampleZO(ZZ *res)
 	{
 		ZZ tmp = RandomBits_ZZ(M);
