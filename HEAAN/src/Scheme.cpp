@@ -644,6 +644,7 @@ namespace heaan
         delete[] raa;
     }
 
+    // cipher1 = cipher1 * cipher2
     void Scheme::multAndEqual(Ciphertext &cipher1, Ciphertext &cipher2)
     {
 
@@ -702,6 +703,7 @@ namespace heaan
 
     //-----------------------------------------
 
+    // res = cipher^2
     void Scheme::square(Ciphertext &res, Ciphertext &cipher)
     {
         res.copyParams(cipher);
@@ -749,6 +751,7 @@ namespace heaan
         delete[] raa;
     }
 
+    // cipher = cipher^2
     void Scheme::squareAndEqual(Ciphertext &cipher)
     {
         ZZ q = ring.qpows[cipher.logq];
@@ -799,6 +802,7 @@ namespace heaan
 
     //-----------------------------------------
 
+    // res = cipher * cnst (缩放因子累加，不进行重缩放)
     void Scheme::multByConst(Ciphertext &res, Ciphertext &cipher, double cnst, long logp)
     {
         ZZ q = ring.qpows[cipher.logq];
@@ -809,18 +813,21 @@ namespace heaan
         res.logp += logp;
     }
 
+    // res = cipher * cnst (缩放因子累加，不进行重缩放)
     void Scheme::multByConst(Ciphertext &res, Ciphertext &cipher, complex<double> cnst, long logp)
     {
         res.copy(cipher);
         multByConstAndEqual(res, cnst, logp);
     }
 
+    // res = cipher * cnst (缩放因子累加，不进行重缩放)
     void Scheme::multByConstVec(Ciphertext &res, Ciphertext &cipher, complex<double> *cnstVec, long logp)
     {
         res.copy(cipher);
         multByConstVecAndEqual(res, cnstVec, logp);
     }
 
+    // res = cipher * cnst (缩放因子累加，不进行重缩放)
     void Scheme::multByConstVecAndEqual(Ciphertext &cipher, complex<double> *cnstVec, long logp)
     {
         long slots = cipher.n;
@@ -918,6 +925,7 @@ namespace heaan
 
     //-----------------------------------------
 
+    // res = cipher * x^degree
     void Scheme::multByMonomial(Ciphertext &res, Ciphertext &cipher, const long degree)
     {
         res.copyParams(cipher);
@@ -925,6 +933,7 @@ namespace heaan
         ring.multByMonomial(res.bx, cipher.bx, degree);
     }
 
+    // cipher = cipher * x^degree
     void Scheme::multByMonomialAndEqual(Ciphertext &cipher, const long degree)
     {
         ring.multByMonomialAndEqual(cipher.ax, degree);
@@ -933,6 +942,7 @@ namespace heaan
 
     //-----------------------------------------
 
+    // res = cipher * 2^bits
     void Scheme::leftShift(Ciphertext &res, Ciphertext &cipher, long bits)
     {
         ZZ q = ring.qpows[cipher.logq];
@@ -941,6 +951,7 @@ namespace heaan
         ring.leftShift(res.bx, cipher.bx, bits, q);
     }
 
+    // cipher = cipher * 2^bits
     void Scheme::leftShiftAndEqual(Ciphertext &cipher, long bits)
     {
         ZZ q = ring.qpows[cipher.logq];
@@ -948,6 +959,7 @@ namespace heaan
         ring.leftShiftAndEqual(cipher.bx, bits, q);
     }
 
+    // cipher = cipher * 2
     void Scheme::doubleAndEqual(Ciphertext &cipher)
     {
         ZZ q = ring.qpows[cipher.logq];
@@ -955,6 +967,7 @@ namespace heaan
         ring.doubleAndEqual(cipher.bx, q);
     }
 
+    // res = cipher / 2^bits (正数向上取整，负数向下取整)
     void Scheme::divByPo2(Ciphertext &res, Ciphertext &cipher, long bits)
     {
         res.copyParams(cipher);
@@ -962,7 +975,8 @@ namespace heaan
         ring.rightShift(res.bx, cipher.bx, bits);
         res.logq -= bits;
     }
-
+    
+    // cipher = cipher / 2^bits (正数向上取整，负数向下取整)
     void Scheme::divByPo2AndEqual(Ciphertext &cipher, long bits)
     {
         ring.rightShiftAndEqual(cipher.ax, bits);
@@ -972,6 +986,7 @@ namespace heaan
 
     //-----------------------------------------
 
+    // res = cipher / 2^dlogq（重缩放，密文、缩放因子和模数除以 dlogq）
     void Scheme::reScaleBy(Ciphertext &res, Ciphertext &cipher, long dlogq)
     {
         res.copyParams(cipher);
@@ -981,6 +996,7 @@ namespace heaan
         res.logq -= dlogq;
     }
 
+    // res = cipher / 2^dlogq = res = cipher / 2^(cipher.logq - logq)（重缩放，密文、缩放因子和模数除以 dlogq）
     void Scheme::reScaleTo(Ciphertext &res, Ciphertext &cipher, long logq)
     {
         long dlogq = cipher.logq - logq;
@@ -989,7 +1005,8 @@ namespace heaan
         ring.rightShift(res.bx, cipher.bx, dlogq);
         res.logp -= dlogq;
     }
-
+    
+    // cipher = cipher / 2^dlogq（重缩放，密文、缩放因子和模数除以 dlogq）
     void Scheme::reScaleByAndEqual(Ciphertext &cipher, long dlogq)
     {
         ring.rightShiftAndEqual(cipher.ax, dlogq);
@@ -998,6 +1015,7 @@ namespace heaan
         cipher.logp -= dlogq;
     }
 
+    // cipher = cipher / 2^dlogq = res = cipher / 2^(cipher.logq - logq)（重缩放，密文、缩放因子和模数除以 dlogq）
     void Scheme::reScaleToAndEqual(Ciphertext &cipher, long logq)
     {
         long dlogq = cipher.logq - logq;
@@ -1007,6 +1025,7 @@ namespace heaan
         cipher.logp -= dlogq;
     }
 
+    // 模数除以 2^dlogq 并重新取模
     void Scheme::modDownBy(Ciphertext &res, Ciphertext &cipher, long dlogq)
     {
         ZZ q = ring.qpows[cipher.logq - dlogq];
@@ -1016,6 +1035,7 @@ namespace heaan
         res.logq -= dlogq;
     }
 
+    // 模数除以 2^dlogq 并重新取模
     void Scheme::modDownByAndEqual(Ciphertext &cipher, long dlogq)
     {
         ZZ q = ring.qpows[cipher.logq - dlogq];
@@ -1024,6 +1044,7 @@ namespace heaan
         cipher.logq -= dlogq;
     }
 
+    // 模数变为 2^logq 并重新取模
     void Scheme::modDownTo(Ciphertext &res, Ciphertext &cipher, long logq)
     {
         ZZ q = ring.qpows[logq];
@@ -1033,6 +1054,7 @@ namespace heaan
         res.logq = logq;
     }
 
+    // 模数变为 2^logq 并重新取模
     void Scheme::modDownToAndEqual(Ciphertext &cipher, long logq)
     {
         ZZ q = ring.qpows[logq];
